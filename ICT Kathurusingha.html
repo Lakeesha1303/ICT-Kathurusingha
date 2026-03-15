@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ICT Kathurusingha | Pro Hub</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg: #0b0f1a;
+      --card: #161b2a;
+      --accent: #00d2ff;
+      --text: #ffffff;
+      --muted: #8b949e;
+      --border: #30363d;
+      --success: #238636;
+      --error: #da3633;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    body { background-color: var(--bg); color: var(--text); overflow-x: hidden; }
+
+    /* --- NAV --- */
+    nav { 
+      background: rgba(11, 15, 26, 0.9); 
+      backdrop-filter: blur(15px); 
+      height: 75px; 
+      padding: 0 5%; 
+      display: flex; /* Changed from none to flex */
+      align-items: center; 
+      justify-content: space-between; 
+      position: fixed; 
+      width: 100%; 
+      top: 0; 
+      z-index: 2000; 
+      border-bottom: 1px solid var(--border); 
+    }
+    .logo { color: var(--accent); font-size: 20px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 13px; font-weight: 600; cursor: pointer; padding: 10px 15px; transition: 0.3s; }
+    .nav-links a.active { color: var(--text); background: var(--border); border-radius: 8px; }
+
+    /* --- SECTIONS --- */
+    .view-section { display: none; padding: 120px 5% 60px; min-height: 100vh; animation: fadeIn 0.4s ease; }
+    .view-section.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .hero { height: 60vh; display: flex; align-items: center; justify-content: center; text-align: center; background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200'); background-size: cover; border-radius: 20px; margin-bottom: 30px; }
+    .hero h1 { font-size: 3.5rem; }
+    .hero span { color: var(--accent); }
+
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-top: 20px; }
+    .card { background: var(--card); border: 1px solid var(--border); padding: 30px; border-radius: 16px; }
+    .btn { background: #1e90ff; color: white; padding: 12px 25px; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; width: 100%; margin-top: 15px; }
+
+    /* --- PORTALS --- */
+    .download-portal { display: none; margin-top: 30px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 16px; padding: 30px; }
+    .portal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+    .exit-btn { border: 1px solid var(--border); padding: 8px 15px; border-radius: 20px; color: var(--muted); cursor: pointer; background: none; }
+    .download-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
+    .doc-card { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 15px; display: flex; align-items: center; gap: 12px; }
+    .dl-action { background: var(--accent); color: #0b0f1a; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 700; }
+
+    /* --- PERFORMANCE --- */
+    .dashboard-grid { display: grid; grid-template-columns: 380px 1fr; gap: 30px; }
+    input, select { width: 100%; padding: 12px; margin: 10px 0; background: #0b0f1a; border: 1px solid var(--border); border-radius: 8px; color: white; outline: none; }
+    .winners-box { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; text-align: center; }
+    .winner-rank { background: #0b0f1a; border: 1px solid var(--border); padding: 10px; border-radius: 12px; }
+    .badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; background: var(--success); }
+
+    @media (max-width: 900px) { .dashboard-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <nav id="main-nav">
+    <div class="logo">ICT Kathurusingha</div>
+    <div class="nav-links">
+      <a onclick="show('home')" id="n-home" class="active">Home</a>
+      <a onclick="show('classes')" id="n-classes">Classes</a>
+      <a onclick="show('marks')" id="n-marks">Performance</a>
+      <a onclick="show('host')" id="n-host" style="display:inline-block; color: var(--error);">Host Panel</a>
+    </div>
+  </nav>
+
+  <section id="home" class="view-section active">
+    <div class="hero">
+      <div>
+        <h1>Welcome to <span>ICT Kathurusingha</span></h1>
+        <p>Learning ICT, Technology, and Digital Skills for the Future.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="classes" class="view-section">
+    <h2>Our ICT Services</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Weekly Papers</h3>
+        <p>Refresh your memorys by doing weekly papers.</p>
+        <button class="btn" onclick="togglePortal('weekly')">Access Weekly Portal</button>
+      </div>
+      <div class="card">
+        <h3>Past Papers</h3>
+        <p>Access past papers from 2017.</p>
+        <button class="btn" onclick="togglePortal('past papers')">Access Past papers Portal</button>
+      </div>
+      <div class="card">
+        <h3>YouTube</h3>
+        <p>Video lessons and tutorials.</p>
+        <button class="btn" style="background:#c00" onclick="togglePortal('youtube')">Watch Lessons</button>
+      </div>
+    </div>
+
+    <div id="weekly-section" class="download-portal">
+      <div class="portal-header">
+        <h2>Weekly Papers Portal</h2>
+        <button class="exit-btn" onclick="togglePortal('')">Close ✕</button>
+      </div>
+          <div class="download-grid">
+      <div class="doc-card">
+        <div class="doc-icon">PDF</div>
+        <div class="doc-details">
+          <h4>2026 nov 1st week.pdf</h4>
+          <span>Size: 781 kB | Date: 04 Nov </span>
+        </div>
+<a href="2026-nov-week-1.pdf" class="dl-action" download>Download</a>      </div>
+
+      <div class="doc-card">
+        <div class="doc-icon">PDF</div>
+        <div class="doc-details">
+          <h4>2026 Nov 2nd Week Paper.pdf</h4>
+          <span>Size: 2.1 MB | Date: 02 Feb</span>
+        </div>
+        <a href="2026 Nov 2nd Week Paper.pdf" class="dl-action" download>Download</a>
+      </div>
+
+ <div class="doc-card">
+        <div class="doc-icon">PDF</div>
+        <div class="doc-details">
+          <h4>2026 Nov 3nd Week Paper.pdf</h4>
+          <span>Size: 2.1 MB | Date: 02 Feb</span>
+        </div>
+        <a href="2026 Nov 3rd Week Paper.pdf" class="dl-action" download>Download</a>
+      </div>
+
+ <div class="doc-card">
+        <div class="doc-icon">PDF</div>
+        <div class="doc-details">
+          <h4>2026 Nov 4th Week Paper.pdf</h4>
+          <span>Size: 2.1 MB | Date: 02 Feb</span>
+        </div>
+        <a href="2026 Nov 4th Week Paper.pdf" class="dl-action" download>Download</a>
+      </div>
+
+ <div class="doc-card">
+        <div class="doc-icon">PDF</div>
+        <div class="doc-details">
+          <h4>2026 Dec 1st Week Paper.pdf</h4>
+          <span>Size: 2.1 MB | Date: 02 Feb</span>
+        </div>
+        <a href="2026 Dec 1st Week Paper.pdf" class="dl-action" download>Download</a>
+      </div>
+
+ <div class="doc-card">
+        <div class="doc-icon">PDF</div>
+        <div class="doc-details">
+          <h4>2026 Dec 2nd Week Paper.pdf</h4>
+          <span>Size: 2.1 MB | Date: 02 Feb</span>
+        </div>
+        <a href="2026 Dec 2nd Week Paper.pdf" class="dl-action" download>Download</a>
+      </div>
+
+ <div class="doc-card">
+        <div class="doc-icon">PDF</div>
+        <div class="doc-details">
+          <h4>2026 Dec 3rd Week Paper.pdf</h4>
+          <span>Size: 2.1 MB | Date: 02 Feb</span>
+        </div>
+        <a href="2026 Dec 3rd Week Paper.pdf" class="dl-action" download>Download</a>
+      </div>
+
+ <div class="doc-card">
+        <div class="doc-icon">PDF</div>
+        <div class="doc-details">
+          <h4>2026 Dec 4th Week Paper.pdf</h4>
+          <span>Size: 2.1 MB | Date: 02 Feb</span>
+        </div>
+        <a href="2026 Dec 4th Week Paper.pdf" class="dl-action" download>Download</a>
+      </div>
+
+ <div class="doc-card">
+        <div class="doc-icon">PDF</div>
+        <div class="doc-details">
+          <h4>2027 Jan 1st Week Paper.pdf</h4>
+          <span>Size: 2.1 MB | Date: 02 Feb</span>
+        </div>
+        <a href="2027 Jan 1st Week Paper.pdf" class="dl-action" download>Download</a>
+      </div>
+
+ <div class="doc-card">
+        <div class="doc-icon">PDF</div>
+        <div class="doc-details">
+          <h4>2027 Jan 2nd Week Paper.pdf</h4>
+          <span>Size: 2.1 MB | Date: 02 Feb</span>
+        </div>
+        <a href="2027 Jan 2nd Week Paper.pdf" class="dl-action" download>Download</a>
+      </div>
+
+ <div class="doc-card">
+        <div class="doc-icon">PDF</div>
+        <div class="doc-details">
+          <h4>2027 Jan 3rd Week Paper.pdf</h4>
+          <span>Size: 2.1 MB | Date: 02 Feb</span>
+        </div>
+        <a href="2027 Jan 3rd Week Paper.pdf" class="dl-action" download>Download</a>
+      </div>
+
+ <div class="doc-card">
+        <div class="doc-icon">PDF</div>
+        <div class="doc-details">
+          <h4>2027 Jan 4th Week Paper.pdf</h4>
+          <span>Size: 2.1 MB | Date: 02 Feb</span>
+        </div>
+        <a href="2027 Jan 4th Week Paper.pdf" class="dl-action" download>Download</a>
+      </div>
+
+ <div class="doc-card">
+        <div class="doc-icon">PDF</div>
+        <div class="doc-details">
+          <h4>2027 Feb 1st Week Paper.pdf</h4>
+          <span>Size: 2.1 MB | Date: 02 Feb</span>
+        </div>
+        <a href="2027 Feb 1st Week Paper.pdf" class="dl-action" download>Download</a>
+      </div>
+
+ <div class="doc-card">
+        <div class="doc-icon">PDF</div>
+        <div class="doc-details">
+          <h4>2027 Feb 2nd Week Paper.pdf</h4>
+          <span>Size: 2.1 MB | Date: 02 Feb</span>
+        </div>
+        <a href="2027 Feb 2nd Week Paper.pdf" class="dl-action" download>Download</a>
+      </div>
+
+<div class="doc-card">
+        <div class="doc-icon">PDF</div>
+        <div class="doc-details">
+          <h4>2027 Feb 3rd Week Paper.pdf</h4>
+          <span>Size: 2.1 MB | Date: 02 Feb</span>
+        </div>
+        <a href="2027 Feb 3rd Week Paper.pdf" class="dl-action" download>Download</a>
+      </div>
+
+<div class="doc-card">
+        <div class="doc-icon">PDF</div>
+        <div class="doc-details">
+          <h4>2027 Feb 4th Week Paper.pdf</h4>
+          <span>Size: 2.1 MB | Date: 02 Feb</span>
+        </div>
+        <a href="2027 Feb 4th Week Paper.pdf" class="dl-action" download>Download</a>
+      </div>
+
+      <div class="doc-card">
+        <div class="doc-icon highlight">NEW</div>
+        <div class="doc-details">
+          <h4>2027 Mar 1st Week Paper.pdf</h4>
+          <span>Size: 1.8 MB | Date: 01 Mar</span>
+        </div>
+        <a href="2027 Mar 1st Week Paper.pdf" class="dl-action" download>Download</a>
+         </div>
+         </div>
+    </div>
+
+    <div id="past papers-section" class="download-portal">
+      <div class="portal-header">
+        <h2>Past Papers Portal</h2>
+        <button class="exit-btn" onclick="togglePortal('')">Close ✕</button>
+      </div>
+      <div class="download-grid">
+        <div class="doc-card">
+          <div class="doc-icon">PDF</div>
+          <div class="doc-details">
+            <h4>2017 A/L Past Paper.pdf</h4>
+            <span>Size: 1.5 MB | Date: 01 Apr</span>
+          </div>
+          <a href="2017-AL-ICT-Past-Paper-English-Medium.pdf" class="dl-action" download>Download</a>
+        </div>
+      </div><br>
+
+      <div class="download-grid">
+        <div class="doc-card">
+          <div class="doc-icon">PDF</div>
+          <div class="doc-details">
+            <h4>2018 A/L Past Paper.pdf</h4>
+            <span>Size: 1.5 MB | Date: 01 Apr</span>
+          </div>
+          <a href="2018-AL-ICT-Past-Paper-English-Medium.pdf" class="dl-action" download>Download</a>
+        </div>
+      </div><br>
+
+      <div class="download-grid">
+        <div class="doc-card">
+          <div class="doc-icon">PDF</div>
+          <div class="doc-details">
+            <h4>2019 A/L Past Paper.pdf</h4>
+            <span>Size: 1.5 MB | Date: 01 Apr</span>
+          </div>
+          <a href="2019-AL-ICT-Past-Paper-English-Medium.pdf" class="dl-action" download>Download</a>
+        </div>
+      </div><br>
+
+      <div class="download-grid">
+        <div class="doc-card">
+          <div class="doc-icon">PDF</div>
+          <div class="doc-details">
+            <h4>2020 A/L Past Paper.pdf</h4>
+            <span>Size: 1.5 MB | Date: 01 Apr</span>
+          </div>
+          <a href="2020-AL-ICT-Past-Paper-English-Medium.pdf" class="dl-action" download>Download</a>
+        </div>
+      </div><br>
+
+      <div class="download-grid">
+        <div class="doc-card">
+          <div class="doc-icon">PDF</div>
+          <div class="doc-details">
+            <h4>2021 A/L Past Paper.pdf</h4>
+            <span>Size: 1.5 MB | Date: 01 Apr</span>
+          </div>
+          <a href="2021-AL-ICT-Past-Paper-English-Medium.pdf" class="dl-action" download>Download</a>
+        </div>
+      </div><br>
+
+      <div class="download-grid">
+        <div class="doc-card">
+          <div class="doc-icon">PDF</div>
+          <div class="doc-details">
+            <h4>2022 A/L Past Paper.pdf</h4>
+            <span>Size: 1.5 MB | Date: 01 Apr</span>
+          </div>
+          <a href="2022-AL-ICT-Past-Paper-English-Medium.pdf" class="dl-action" download>Download</a>
+        </div>
+      </div><br>
+
+    </div>
+
+    <div id="youtube-section" class="download-portal">
+      <div class="portal-header">
+        <h2>YouTube Lessons</h2>
+        <button class="exit-btn" onclick="togglePortal('')">Close ✕</button>
+      </div>
+      <div class="download-grid">
+        <div class="doc-card">
+          <div class="doc-icon" style="background: #ff0000; color: white;">YT</div>
+          <div class="doc-details">
+            <h4>ICT Lesson 01 With Paper Discussion </h4>
+            <span> 5 Videos </span>
+          </div>
+          <a href="https://youtube.com/playlist?list=PLdHbjsDuybaEnW9hu1bnxTzDUa74jaMlL&si=mHCOCl85k4JBFak5" target="_blank" class="dl-action" style="background: #c00; color: white;">Watch Now</a>
+        </div>
+      </div><br>
+
+      <div class="download-grid">
+        <div class="doc-card">
+          <div class="doc-icon" style="background: #ff0000; color: white;">YT</div>
+          <div class="doc-details">
+            <h4>ICT Lesson 03 With Paper Discussion</h4>
+            <span> 15 Videos </span>
+          </div>
+          <a href="https://youtube.com/playlist?list=PLdHbjsDuybaGJvpad15GFKT0mlh6CtBAI&si=nnA9h5gVX4NR5LQE" target="_blank" class="dl-action" style="background: #c00; color: white;">Watch Now</a>
+        </div>
+      </div><br>
+
+     <div class="download-grid">
+        <div class="doc-card">
+          <div class="doc-icon" style="background: #ff0000; color: white;">YT</div>
+          <div class="doc-details">
+            <h4>ICT Lesson 04 With Paper Discussion</h4>
+            <span> 40 Videos </span>
+          </div>
+          <a href="https://youtube.com/playlist?list=PLdHbjsDuybaF21KJMvyIjEqZ2P0bCzyKi&si=jRuLa-w9mO23vz_X" target="_blank" class="dl-action" style="background: #c00; color: white;">Watch Now</a>
+        </div>
+      </div><br>
+
+     <div class="download-grid">
+        <div class="doc-card">
+          <div class="doc-icon" style="background: #ff0000; color: white;">YT</div>
+          <div class="doc-details">
+            <h4>ICT Lesson 05 With Paper Discussion</h4>
+            <span> 39 Videos </span>
+          </div>
+          <a href="https://youtube.com/playlist?list=PLdHbjsDuybaHHNxCNltpcw4xTVkcmXdup&si=zm0x2uqWLP9PQaVE" target="_blank" class="dl-action" style="background: #c00; color: white;">Watch Now</a>
+        </div>
+      </div><br>
+
+     <div class="download-grid">
+        <div class="doc-card">
+          <div class="doc-icon" style="background: #ff0000; color: white;">YT</div>
+          <div class="doc-details">
+            <h4>ICT Lesson 06 With Paper Discussion</h4>
+            <span> 30 Videos </span>
+          </div>
+          <a href="https://youtube.com/playlist?list=PLdHbjsDuybaEY8VT1FGmGD5G01qyQ8DbQ&si=V6nseM6XTFeVbefv" target="_blank" class="dl-action" style="background: #c00; color: white;">Watch Now</a>
+        </div>
+      </div><br>
+
+     <div class="download-grid">
+        <div class="doc-card">
+          <div class="doc-icon" style="background: #ff0000; color: white;">YT</div>
+          <div class="doc-details">
+            <h4>ICT Lesson 07 With Paper Discussion</h4>
+            <span> 31 Videos </span>
+          </div>
+          <a href="https://youtube.com/playlist?list=PLdHbjsDuybaHxoNCixIcqFwyfvZHoZ7Po&si=QRYMSCBaZLQbuiyb" target="_blank" class="dl-action" style="background: #c00; color: white;">Watch Now</a>
+        </div>
+      </div><br>
+
+     <div class="download-grid">
+        <div class="doc-card">
+          <div class="doc-icon" style="background: #ff0000; color: white;">YT</div>
+          <div class="doc-details">
+            <h4>ICT Lesson 08 With Paper Discussion</h4>
+            <span> 20 Videos </span>
+          </div>
+          <a href="https://youtube.com/playlist?list=PLdHbjsDuybaEJ52yF1c8NSe8Z3W0cqdt_&si=U7yPhZ2kYrCrvlvU" target="_blank" class="dl-action" style="background: #c00; color: white;">Watch Now</a>
+        </div>
+      </div><br>
+
+     <div class="download-grid">
+        <div class="doc-card">
+          <div class="doc-icon" style="background: #ff0000; color: white;">YT</div>
+          <div class="doc-details">
+            <h4>ICT Lesson 09 With Paper Discussion</h4>
+            <span> 44 Videos </span>
+          </div>
+          <a href="https://youtube.com/playlist?list=PLdHbjsDuybaFq8LTBvjhoOwDslDKfgDmI&si=7beiOtasuk17TcEo" target="_blank" class="dl-action" style="background: #c00; color: white;">Watch Now</a>
+        </div>
+      </div><br>
+
+     <div class="download-grid">
+        <div class="doc-card">
+          <div class="doc-icon" style="background: #ff0000; color: white;">YT</div>
+          <div class="doc-details">
+            <h4>ICT Lesson 10 With Paper Discussion</h4>
+            <span> 5 Videos </span>
+          </div>
+          <a href="https://youtube.com/playlist?list=PLdHbjsDuybaFtJ4FVesVl5yC8U4FKJIXz&si=jfusTzLvg71K9E7Y" target="_blank" class="dl-action" style="background: #c00; color: white;">Watch Now</a>
+        </div>
+      </div><br>
+
+     <div class="download-grid">
+        <div class="doc-card">
+          <div class="doc-icon" style="background: #ff0000; color: white;">YT</div>
+          <div class="doc-details">
+            <h4>ICT Lesson 11With Paper Discussion</h4>
+            <span> 2 Videos </span>
+          </div>
+          <a href="https://youtube.com/playlist?list=PLdHbjsDuybaFtJ4FVesVl5yC8U4FKJIXz&si=jfusTzLvg71K9E7Y" target="_blank" class="dl-action" style="background: #c00; color: white;">Watch Now</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="marks" class="view-section">
+    <div class="dashboard-grid">
+      <div class="card">
+        <h2>Student Data</h2>
+        <form id="marksForm">
+          <input type="text" id="sName" placeholder="Student Name" required>
+          <select id="sWeek">
+            <option value="0">Week 1</option><option value="1">Week 2</option>
+            <option value="2">Week 3</option><option value="3">Week 4</option>
+          </select>
+          <input type="number" id="sScore" placeholder="Marks" required>
+          <button type="submit" class="btn" style="background:var(--accent); color:black">Add Record</button>
+        </form>
+        <div style="margin-top:20px; max-height: 300px; overflow-y: auto;">
+          <table>
+            <thead><tr><th>Name</th><th>Score</th><th>Grade</th></tr></thead>
+            <tbody id="tBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="winners-box">
+            <div class="winner-rank"><h4>2nd</h4><p id="w2">--</p></div>
+            <div class="winner-rank" style="border-color: gold;"><h4>1st</h4><p id="w1">--</p></div>
+            <div class="winner-rank"><h4>3rd</h4><p id="w3">--</p></div>
+        </div>
+        <canvas id="perfChart" style="height:300px"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <section id="host" class="view-section">
+    <div class="card">
+        <h2 style="color:var(--error)">Host Control Panel</h2>
+        <input type="text" id="h-winner" placeholder="Update 1st Place Name">
+        <button class="btn" onclick="updateWin()">Update Winners</button>
+    </div>
+  </section>
+
+  <script>
+    let records = JSON.parse(localStorage.getItem('ict_master_data')) || [];
+    const ctx = document.getElementById('perfChart').getContext('2d');
+
+    function show(id) {
+      document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      document.getElementById('n-' + id).classList.add('active');
+      if (id !== 'classes') togglePortal('');
+    }
+
+    function togglePortal(type) {
+      document.querySelectorAll('.download-portal').forEach(p => p.style.display = 'none');
+      if(type) {
+        const el = document.getElementById(type + '-section');
+        el.style.display = 'block';
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    const perfChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['W1', 'W2', 'W3', 'W4'],
+        datasets: [{ data: [0,0,0,0], backgroundColor: '#00d2ff' }]
+      },
+      options: { responsive: true, scales: { y: { beginAtZero: true, max: 100 } } }
+    });
+
+    function syncUI() {
+      const tBody = document.getElementById('tBody');
+      tBody.innerHTML = '';
+      let scores = [0,0,0,0];
+      records.forEach(r => {
+        scores[r.week] = r.score;
+        tBody.innerHTML += `<tr><td>${r.name}</td><td>${r.score}%</td><td><span class="badge">${r.grade}</span></td></tr>`;
+      });
+      perfChart.data.datasets[0].data = scores;
+      perfChart.update();
+      localStorage.setItem('ict_master_data', JSON.stringify(records));
+    }
+
+    document.getElementById('marksForm').onsubmit = function(e) {
+      e.preventDefault();
+      const s = parseInt(document.getElementById('sScore').value);
+      records.push({
+        name: document.getElementById('sName').value,
+        week: document.getElementById('sWeek').value,
+        score: s, grade: s >= 75 ? 'A' : 'C'
+      });
+      syncUI();
+      this.reset();
+    };
+
+    function updateWin() {
+        document.getElementById('w1').innerText = document.getElementById('h-winner').value;
+        alert("Winners Updated!");
+    }
+
+    // Auto-run when the page loads
+    window.onload = function() {
+        syncUI();
+    };
+  </script>
+</body>
+</html>
